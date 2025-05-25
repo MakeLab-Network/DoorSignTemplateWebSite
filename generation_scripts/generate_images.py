@@ -12,7 +12,7 @@ SOURCE_TEMPLATES_DIR: Path = SCRIPT_DIR / "../source_templates"
 WEB_TEMPLATE_DIR: Path = SCRIPT_DIR / "../website/displayables"
 DOWNLOADABLE_TEMPLATE_DIR: Path = SCRIPT_DIR / "../website/downloadables"
 ORDER_JSON_PATH: Path = SOURCE_TEMPLATES_DIR / "order.json"
-VARIATION_LIST_PATH: Path = SCRIPT_DIR / "../website/variation_list.json"
+CONFIG_FILE_PATH: Path = SCRIPT_DIR / "../website/config.json"
 WEB_BGND_COLOR: str = "#606060" 
 WEB_BOARD_COLOR: str = "#e9ddaf" 
 WEB_ENGRAVE_COLOR: str = "#28220B"
@@ -257,7 +257,7 @@ def create_variation_files(base_file_name: str) -> int:
     successful_variations: int = 0
 
     # Create base variation (no engraving layers)
-    variation_count += 1
+    
     if create_base_variation(original_tree, base_file_name, variation_count, all_layer_ids, NS):
         successful_variations += 1
 
@@ -305,15 +305,21 @@ def main() -> None:
     if total_variations_generated == 0 and files_to_process:
         log_error(f"No variations were successfully generated for any of the {len(files_to_process)} input file(s). Check warnings and errors above.", file_context="generation_scripts/generate_images.py")
 
-    if variation_summary_list: 
-        try:
-            with open(VARIATION_LIST_PATH, "w") as f_json: 
-                json.dump(variation_summary_list, f_json, indent=2)
-            print(f"::info file=generation_scripts/generate_images.py::Variation list written to {VARIATION_LIST_PATH.name}")
-        except IOError as e_io_main:
-            log_error(f"Failed to write variation list JSON: {e_io_main}", file_context=VARIATION_LIST_PATH.name)
-    elif files_to_process and not error_occurred: 
-        print(f"::warning file=generation_scripts/generate_images.py::No successful variations to write to {VARIATION_LIST_PATH.name}.")
+    # Create config object with background color and variations
+    config_data = {
+        "webBackgroundColor": WEB_BGND_COLOR,
+        "variations": variation_summary_list
+    }
+    
+    try:
+        with open(CONFIG_FILE_PATH, "w") as f_json: 
+            json.dump(config_data, f_json, indent=2)
+        print(f"::info file=generation_scripts/generate_images.py::Config file written to {CONFIG_FILE_PATH.name}")
+    except IOError as e_io_main:
+        log_error(f"Failed to write config JSON: {e_io_main}", file_context=CONFIG_FILE_PATH.name)
+    
+    if not variation_summary_list and files_to_process and not error_occurred: 
+        print(f"::warning file=generation_scripts/generate_images.py::No successful variations found, but config file still written with background color.")
     
     if not error_occurred:
         print(f"::notice file=generation_scripts/generate_images.py,title=Processing Complete::--- Finished processing. Total successful variations generated: {total_variations_generated} ---")
