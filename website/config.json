@@ -1,0 +1,53 @@
+{
+  "webBackgroundColor": "#606060",
+  "variations": [
+    [
+      "ellipse",
+      2
+    ],
+    [
+      "rectangle",
+      2
+    ],
+    [
+      "rounded_rectangle",
+      2
+    ],
+    [
+      "hexagon",
+      2
+    ],
+    [
+      "spiky",
+      2
+    ],
+    [
+      "pixel_cloud",
+      4
+    ],
+    [
+      "cloud",
+      2
+    ],
+    [
+      "symmetric_cloud",
+      3
+    ],
+    [
+      "hand_drawn_ellipse",
+      3
+    ],
+    [
+      "hand_drawn_rectangle",
+      2
+    ],
+    [
+      "rococo",
+      4
+    ],
+    [
+      "wavy",
+      2
+    ]
+  ]
+}
