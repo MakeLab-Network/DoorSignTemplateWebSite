@@ -142,8 +142,8 @@ class TemplateManager {
             };
         };
         
-        // Start the animation with a 2-second interval
-        const intervalId = setInterval(switchVariation, 2000);
+        // Start the animation with a 1.5-second interval
+        const intervalId = setInterval(switchVariation, 1500);
         this.animationIntervals.set(item, intervalId);
         
         // Debug: log initial state
