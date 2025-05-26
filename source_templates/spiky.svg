@@ -26,14 +26,14 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      inkscape:zoom="1.0080625"
-     inkscape:cx="377.95276"
-     inkscape:cy="227.16845"
-     inkscape:window-width="1440"
-     inkscape:window-height="830"
-     inkscape:window-x="-6"
-     inkscape:window-y="-6"
+     inkscape:cx="378.94476"
+     inkscape:cy="227.66446"
+     inkscape:window-width="1920"
+     inkscape:window-height="1009"
+     inkscape:window-x="2872"
+     inkscape:window-y="-8"
      inkscape:window-maximized="1"
-     inkscape:current-layer="layer1" />
+     inkscape:current-layer="layer4" />
   <defs
      id="defs1">
     <inkscape:path-effect
@@ -68,7 +68,8 @@
   <g
      inkscape:label="Cut"
      inkscape:groupmode="layer"
-     id="layer1">
+     id="layer1"
+     sodipodi:insensitive="true">
     <path
        sodipodi:type="star"
        style="display:inline;fill:none;stroke:#000000;stroke-width:0.4"
@@ -92,7 +93,8 @@
      inkscape:groupmode="layer"
      id="layer2"
      inkscape:label="Engrave"
-     style="display:inline">
+     style="display:inline"
+     sodipodi:insensitive="true">
     <ellipse
        style="fill:none;stroke:#ff0000;stroke-width:0.226276"
        id="path2"
@@ -101,6 +103,10 @@
        rx="62.729984"
        ry="33.497303" />
   </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer4"
+     inkscape:label="Contents" />
   <metadata
      id="metadata45">
     <rdf:RDF>

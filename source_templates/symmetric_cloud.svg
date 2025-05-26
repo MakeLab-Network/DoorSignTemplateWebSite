@@ -26,14 +26,14 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      inkscape:zoom="0.70710678"
-     inkscape:cx="505.58135"
-     inkscape:cy="387.49452"
-     inkscape:window-width="1440"
-     inkscape:window-height="830"
-     inkscape:window-x="-6"
-     inkscape:window-y="-6"
+     inkscape:cx="506.28846"
+     inkscape:cy="388.20162"
+     inkscape:window-width="1920"
+     inkscape:window-height="1009"
+     inkscape:window-x="2872"
+     inkscape:window-y="-8"
      inkscape:window-maximized="1"
-     inkscape:current-layer="layer1" />
+     inkscape:current-layer="svg1" />
   <defs
      id="defs1">
     <inkscape:path-effect
@@ -101,7 +101,8 @@
   <g
      inkscape:label="Cut"
      inkscape:groupmode="layer"
-     id="layer1">
+     id="layer1"
+     sodipodi:insensitive="true">
     <path
        id="path2"
        style="fill:none;stroke:#000000;stroke-width:0.243984;stroke-dasharray:none"
@@ -111,7 +112,8 @@
      inkscape:groupmode="layer"
      id="layer2"
      inkscape:label="Engrave"
-     style="display:inline">
+     style="display:inline"
+     sodipodi:insensitive="true">
     <path
        id="path2-9"
        style="fill:none;stroke:#ff0000;stroke-width:0.4;stroke-dasharray:none"
@@ -124,7 +126,8 @@
      inkscape:groupmode="layer"
      id="layer4"
      inkscape:label="Engrave2"
-     style="display:inline">
+     style="display:inline"
+     sodipodi:insensitive="true">
     <path
        id="path2-4"
        style="display:inline;fill:none;stroke:#ff0000;stroke-width:0.4;stroke-dasharray:none"
@@ -140,6 +143,10 @@
        inkscape:original-d="M 144.05529,14.476119 A 65.879623,85.523933 0 0 0 100.37682,35.975582 65.878044,69.841331 0 0 0 74.055428,30.158883 65.878044,69.841331 0 0 0 8.1772786,100.0001 a 65.878044,69.841331 0 0 0 65.8781494,69.84121 65.878044,69.841331 0 0 0 26.321392,-5.8167 65.879623,85.523933 0 0 0 43.67847,21.49947 65.879623,85.523933 0 0 0 46.73048,-25.2672 65.896515,69.841309 0 0 0 33.26929,9.58443 65.896515,69.841309 0 0 0 65.89675,-69.84121 65.896515,69.841309 0 0 0 -65.89675,-69.841217 65.896515,69.841309 0 0 0 -33.26929,9.583911 65.879623,85.523933 0 0 0 -46.73048,-25.266675 z"
        transform="matrix(0.63794273,0,0,0.58320497,3.2213238,5.9555252)" />
   </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer3"
+     inkscape:label="Contents" />
   <metadata
      id="metadata45">
     <rdf:RDF>
