@@ -6,15 +6,15 @@
 }
 
 html {
-    background-color: var(--bg-color, #e9ddaf) !important;
+    background-color: var(--bg-color) !important;
     min-height: 100vh;
 }
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
-    color: var(--text-color, #28220B) !important;
-    background-color: var(--bg-color, #e9ddaf) !important;
+    color: var(--text-color) !important;
+    background-color: var(--bg-color) !important;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -29,14 +29,14 @@ header {
 }
 
 header h1 {
-    color: #2c3e50;
+    color: var(--text-color) !important;
     margin-bottom: 0.5rem;
     font-size: 2.5rem;
     font-weight: 300;
 }
 
 header p {
-    color: #7f8c8d;
+    color: var(--text-color) !important;
     font-size: 1.2rem;
 }
 
@@ -72,7 +72,7 @@ main {
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 1rem;
     margin: 0 auto;
-    background-color: var(--img-bg-color, #606060);
+    background-color: var(--img-bg-color);
     border-radius: 8px;
 }
 
@@ -136,7 +136,7 @@ main {
     grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
     gap: 2rem;
     margin: 0 auto;
-    background-color: var(--img-bg-color, #606060);
+    background-color: var(--img-bg-color);
     padding: 2rem;
     border-radius: 8px;
 }
@@ -170,7 +170,7 @@ main {
 .download-section {
     padding: 1.5rem;
     text-align: center;
-    background: var(--img-bg-color, #606060);
+    background: var(--img-bg-color);
 }
 
 .download-button {
@@ -200,7 +200,7 @@ footer {
     background: transparent;
     padding: 1.5rem;
     text-align: center;
-    color: #7f8c8d;
+    color: var(--text-color) !important;
     border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
 
