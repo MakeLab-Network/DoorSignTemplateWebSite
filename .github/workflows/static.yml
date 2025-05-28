@@ -1,17 +1,20 @@
-# Simple workflow for deploying static content to GitHub Pages
-name: Deploy static content to Pages
+# Workflow for generating templates and deploying to GitHub Pages
+name: Generate Templates and Deploy to Pages
 
 on:
-  # Runs on pushes targeting the default branch
+  # Runs on pushes that modify generation scripts or source templates
   push:
     branches: ["main"]
+    paths:
+      - 'generation_scripts/**'
+      - 'source_templates/**'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+# Sets permissions for the workflow
 permissions:
-  contents: read
+  contents: write  # Need write access to commit generated files
   pages: write
   id-token: write
 
@@ -22,8 +25,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # Single deploy job since we're just deploying
-  deploy:
+  generate-and-deploy:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -31,13 +33,64 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Clean generated files
+        run: |
+          # Remove generated files if they exist
+          rm -f website/config.json
+          rm -rf website/displayables
+          rm -rf website/downloadables
+          echo "Cleaned generated files"
+
+      - name: Run generation script
+        run: |
+          cd generation_scripts
+          python generate_images.py
+
+      - name: Check for changes
+        id: check_changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          
+          # Check if there are any changes to commit
+          git add website/config.json website/displayables/ website/downloadables/
+          
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+            echo "changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "Changes detected"
+            echo "changes=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit and push changes
+        if: steps.check_changes.outputs.changes == 'true'
+        run: |
+          git commit -m "Auto-generate template variations [skip ci]"
+          git push
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload entire repository
+          # Upload website directory
           path: 'website'
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
