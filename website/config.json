@@ -1,5 +1,13 @@
 {
-  "webBackgroundColor": "#606060",
+  "colors": {
+    "webImg": {
+      "backgroundColor": "#606060"
+    },
+    "webMain": {
+      "backgroundColor": "#e9ddaf",
+      "textColor": "#28220B"
+    }
+  },
   "variations": [
     [
       "ellipse",
