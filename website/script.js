@@ -1,4 +1,5 @@
 // Main page script for template selection
+
 class TemplateManager {
     constructor() {
         this.config = null;
@@ -27,7 +28,6 @@ class TemplateManager {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             this.config = await response.json();
-            console.log('Config loaded:', this.config);
         } catch (error) {
             console.error('Error loading config:', error);
             throw error;
@@ -35,8 +35,21 @@ class TemplateManager {
     }
     
     applyBackgroundColor() {
-        if (this.config && this.config.webBackgroundColor) {
-            document.documentElement.style.setProperty('--bg-color', this.config.webBackgroundColor);
+        if (this.config && this.config.colors) {
+            // Apply main page colors
+            if (this.config.colors.webMain) {
+                if (this.config.colors.webMain.backgroundColor) {
+                    document.documentElement.style.setProperty('--bg-color', this.config.colors.webMain.backgroundColor);
+                }
+                if (this.config.colors.webMain.textColor) {
+                    document.documentElement.style.setProperty('--text-color', this.config.colors.webMain.textColor);
+                }
+            }
+            
+            // Store webImg colors for template display
+            if (this.config.colors.webImg) {
+                document.documentElement.style.setProperty('--img-bg-color', this.config.colors.webImg.backgroundColor);
+            }
         }
     }
     
@@ -60,9 +73,7 @@ class TemplateManager {
             }
         });
         
-        console.log(`Preloading ${preloadPromises.length} variations...`);
         await Promise.all(preloadPromises);
-        console.log('All variations preloaded!');
     }
     
     createTemplateGrid() {
@@ -98,7 +109,7 @@ class TemplateManager {
         item.addEventListener('click', () => {
             this.navigateToTemplate(templateName);
         });
-        
+
         item.appendChild(svg);
         
         // Start animation after SVG loads (only once)
@@ -126,9 +137,6 @@ class TemplateManager {
             // Calculate next variation
             currentVariation = (currentVariation + 1) % variationCount;
             
-            // Debug logging
-            console.log(`${templateName}: switching to variation ${currentVariation} of ${variationCount}`);
-            
             // Simply change the src - instant cut, no animation
             const newSrc = `displayables/${templateName}_var${currentVariation}.svg`;
             svg.src = newSrc;
@@ -145,9 +153,6 @@ class TemplateManager {
         // Start the animation with a 1.5-second interval
         const intervalId = setInterval(switchVariation, 1500);
         this.animationIntervals.set(item, intervalId);
-        
-        // Debug: log initial state
-        console.log(`${templateName}: starting animation with ${variationCount} variations`);
     }
     
     navigateToTemplate(templateName) {
@@ -166,21 +171,10 @@ class TemplateManager {
         const params = new URLSearchParams({
             template: templateName,
             variationCount: variationCount,
-            backgroundColor: this.config.webBackgroundColor || '#606060'
+            colors: JSON.stringify(this.config.colors || {})
         });
         
         window.location.href = `template.html?${params.toString()}`;
-    }
-    
-    showError(message) {
-        const grid = document.getElementById('template-grid');
-        grid.innerHTML = `<div class="error">${message}</div>`;
-    }
-    
-    // Cleanup method
-    destroy() {
-        this.animationIntervals.forEach(intervalId => clearInterval(intervalId));
-        this.animationIntervals.clear();
     }
 }
 
@@ -193,10 +187,3 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize template manager
     window.templateManager = new TemplateManager();
 });
-
-// Cleanup on page unload
-window.addEventListener('beforeunload', () => {
-    if (window.templateManager) {
-        window.templateManager.destroy();
-    }
-}); 

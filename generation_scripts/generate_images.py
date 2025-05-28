@@ -13,10 +13,12 @@ WEB_TEMPLATE_DIR: Path = SCRIPT_DIR / "../website/displayables"
 DOWNLOADABLE_TEMPLATE_DIR: Path = SCRIPT_DIR / "../website/downloadables"
 ORDER_JSON_PATH: Path = SOURCE_TEMPLATES_DIR / "order.json"
 CONFIG_FILE_PATH: Path = SCRIPT_DIR / "../website/config.json"
-WEB_BGND_COLOR: str = "#606060" 
-WEB_BOARD_COLOR: str = "#e9ddaf" 
-WEB_ENGRAVE_COLOR: str = "#28220B"
-WEB_STROKE_WIDTH: str = "0.6" 
+WEB_IMG_BGND_COLOR: str = "#606060" 
+WEB_IMG_BOARD_COLOR: str = "#e9ddaf" 
+WEB_IMG_ENGRAVE_COLOR: str = "#28220B"
+WEB_IMG_STROKE_WIDTH: str = "0.6" 
+WEB_MAIN_BGND_COLOR: str = WEB_IMG_BOARD_COLOR
+WEB_MAIN_TEXT_COLOR: str = WEB_IMG_ENGRAVE_COLOR
 
 error_occurred: bool = False
 
@@ -95,7 +97,7 @@ def create_web_version(base_file_name: str) -> None:
     bg_rect: etree._Element = etree.Element('rect', {
         'width': '100%',
         'height': '100%',
-        'fill': WEB_BGND_COLOR,
+        'fill': WEB_IMG_BGND_COLOR,
         'style': 'opacity:1',
         'id': 'background'
     })
@@ -109,16 +111,16 @@ def create_web_version(base_file_name: str) -> None:
         
         new_style: str
         if 'fill:none' in style and 'stroke:#000000' in style:
-            new_style = style.replace('fill:none', f'fill:{WEB_BOARD_COLOR}')
+            new_style = style.replace('fill:none', f'fill:{WEB_IMG_BOARD_COLOR}')
             new_style = re.sub(r'stroke:#000000[^;]*', 'stroke:none', new_style)
             elem.set('style', new_style)
         
         elif 'fill:none' in style and ('stroke:#FF0000' in style or 'stroke:#ff0000' in style):
-            new_style = re.sub(r'stroke:#[fF]{2}0000[^;]*', f'stroke:{WEB_ENGRAVE_COLOR}', style)
+            new_style = re.sub(r'stroke:#[fF]{2}0000[^;]*', f'stroke:{WEB_IMG_ENGRAVE_COLOR}', style)
             if 'stroke-width' in new_style:
-                new_style = re.sub(r'stroke-width:[^;]+', f'stroke-width:{WEB_STROKE_WIDTH}', new_style)
+                new_style = re.sub(r'stroke-width:[^;]+', f'stroke-width:{WEB_IMG_STROKE_WIDTH}', new_style)
             else:
-                new_style += f';stroke-width:{WEB_STROKE_WIDTH}'
+                new_style += f';stroke-width:{WEB_IMG_STROKE_WIDTH}'
             elem.set('style', new_style)
     
     try:
@@ -305,9 +307,17 @@ def main() -> None:
     if total_variations_generated == 0 and files_to_process:
         log_error(f"No variations were successfully generated for any of the {len(files_to_process)} input file(s). Check warnings and errors above.", file_context="generation_scripts/generate_images.py")
 
-    # Create config object with background color and variations
+    # Create config object with colors and variations
     config_data = {
-        "webBackgroundColor": WEB_BGND_COLOR,
+        "colors": {
+            "webImg": {
+                "backgroundColor": WEB_IMG_BGND_COLOR
+            },
+            "webMain": {
+                "backgroundColor": WEB_MAIN_BGND_COLOR,
+                "textColor": WEB_MAIN_TEXT_COLOR
+            }
+        },
         "variations": variation_summary_list
     }
     

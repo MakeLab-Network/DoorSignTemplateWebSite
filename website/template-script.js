@@ -41,7 +41,7 @@ class VariationManager {
     constructor() {
         this.templateName = null;
         this.variationCount = 0;
-        this.backgroundColor = null;
+        this.colors = null;
         
         this.init();
     }
@@ -59,7 +59,7 @@ class VariationManager {
                 throw new Error('Invalid variation count');
             }
             
-            this.applyBackgroundColor();
+            this.applyColors();
             this.updatePageTitle();
             this.createVariationGrid();
         } catch (error) {
@@ -72,12 +72,35 @@ class VariationManager {
         const urlParams = new URLSearchParams(window.location.search);
         this.templateName = urlParams.get('template');
         this.variationCount = parseInt(urlParams.get('variationCount')) || 0;
-        this.backgroundColor = urlParams.get('backgroundColor') || '#606060';
+        
+        // Parse colors from URL parameter
+        const colorsParam = urlParams.get('colors');
+        if (colorsParam) {
+            try {
+                this.colors = JSON.parse(colorsParam);
+            } catch (error) {
+                console.warn('Failed to parse colors from URL:', error);
+                this.colors = null;
+            }
+        }
     }
     
-    applyBackgroundColor() {
-        if (this.backgroundColor) {
-            document.documentElement.style.setProperty('--bg-color', this.backgroundColor);
+    applyColors() {
+        if (this.colors) {
+            // Apply main page colors
+            if (this.colors.webMain) {
+                if (this.colors.webMain.backgroundColor) {
+                    document.documentElement.style.setProperty('--bg-color', this.colors.webMain.backgroundColor);
+                }
+                if (this.colors.webMain.textColor) {
+                    document.documentElement.style.setProperty('--text-color', this.colors.webMain.textColor);
+                }
+            }
+            
+            // Store webImg colors for download sections
+            if (this.colors.webImg && this.colors.webImg.backgroundColor) {
+                document.documentElement.style.setProperty('--img-bg-color', this.colors.webImg.backgroundColor);
+            }
         }
     }
     
@@ -170,7 +193,7 @@ class VariationManager {
             const svgContent = await response.text();
             
             // Remove the warning using the imported function
-            const warningRegex = /<!--[\s\S]*?WARNING: AUTO-GENERATED FILE - START[\s\S]*?WARNING: AUTO-GENERATED FILE - END[\s\S]*?-->/g;
+            const warningRegex = /<!--[\s]*?WARNING: AUTO-GENERATED FILE - START[\s\S]*?WARNING: AUTO-GENERATED FILE - END[\s]*?-->/g;
             const cleanedSvgContent = removeWarningFromSvg(svgContent, warningRegex);
             
             // Download the cleaned SVG

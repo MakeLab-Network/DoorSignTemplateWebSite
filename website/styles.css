@@ -5,11 +5,16 @@
     box-sizing: border-box;
 }
 
+html {
+    background-color: var(--bg-color, #e9ddaf) !important;
+    min-height: 100vh;
+}
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
-    color: #333;
-    background-color: var(--bg-color, #606060);
+    color: var(--text-color, #28220B) !important;
+    background-color: var(--bg-color, #e9ddaf) !important;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -17,7 +22,7 @@ body {
 
 /* Header styles */
 header {
-    background: rgba(255, 255, 255, 0.95);
+    background: transparent;
     padding: 2rem;
     text-align: center;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -58,14 +63,17 @@ main {
     max-width: 1400px;
     margin: 0 auto;
     width: 100%;
+    background: transparent;
 }
 
 /* Template grid (main page) */
 .template-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 0;
+    gap: 1rem;
     margin: 0 auto;
+    background-color: var(--img-bg-color, #606060);
+    border-radius: 8px;
 }
 
 .template-item:hover {
@@ -88,7 +96,9 @@ main {
     aspect-ratio: 5/3;
     cursor: pointer;
     overflow: hidden;
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 8px;
+    background: white;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -126,6 +136,9 @@ main {
     grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
     gap: 2rem;
     margin: 0 auto;
+    background-color: var(--img-bg-color, #606060);
+    padding: 2rem;
+    border-radius: 8px;
 }
 
 .variation-item {
@@ -157,11 +170,11 @@ main {
 .download-section {
     padding: 1.5rem;
     text-align: center;
-    background: #f8f9fa;
+    background: var(--img-bg-color, #606060);
 }
 
 .download-button {
-    background: #27ae60;
+    background: #3498db;
     color: white;
     border: none;
     padding: 1rem 2rem;
@@ -174,7 +187,7 @@ main {
 }
 
 .download-button:hover {
-    background: #229954;
+    background: #2980b9;
     transform: translateY(-2px);
 }
 
@@ -184,7 +197,7 @@ main {
 
 /* Footer */
 footer {
-    background: rgba(255, 255, 255, 0.95);
+    background: transparent;
     padding: 1.5rem;
     text-align: center;
     color: #7f8c8d;
