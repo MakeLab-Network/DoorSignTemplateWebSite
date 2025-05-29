@@ -53,10 +53,8 @@ jobs:
       - name: Clean generated files
         run: |
           # Remove generated files if they exist
-          rm -f website/config.json
-          rm -rf website/displayables
-          rm -rf website/downloadables
-          echo "Cleaned generated files"
+          rm -rf website/generated
+          echo "Cleaned generated directory"
 
       - name: Run generation script
         run: |
@@ -70,7 +68,7 @@ jobs:
           git config --local user.name "GitHub Action"
           
           # Check if there are any changes to commit
-          git add website/config.json website/displayables/ website/downloadables/
+          git add website/generated/
           
           if git diff --staged --quiet; then
             echo "No changes to commit"

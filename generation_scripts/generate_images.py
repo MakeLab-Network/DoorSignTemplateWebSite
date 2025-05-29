@@ -9,10 +9,10 @@ from typing import List, Dict, Tuple, Optional, TextIO
 
 SCRIPT_DIR: Path = Path(__file__).resolve().parent
 SOURCE_TEMPLATES_DIR: Path = SCRIPT_DIR / "../source_templates"
-WEB_TEMPLATE_DIR: Path = SCRIPT_DIR / "../website/displayables"
-DOWNLOADABLE_TEMPLATE_DIR: Path = SCRIPT_DIR / "../website/downloadables"
+WEB_TEMPLATE_DIR: Path = SCRIPT_DIR / "../website/generated/displayables"
+DOWNLOADABLE_TEMPLATE_DIR: Path = SCRIPT_DIR / "../website/generated/downloadables"
 ORDER_JSON_PATH: Path = SOURCE_TEMPLATES_DIR / "order.json"
-CONFIG_FILE_PATH: Path = SCRIPT_DIR / "../website/config.json"
+CONFIG_FILE_PATH: Path = SCRIPT_DIR / "../website/generated/config.json"
 WEB_IMG_BGND_COLOR: str = "#606060" 
 WEB_IMG_BOARD_COLOR: str = "#e9ddaf" 
 WEB_IMG_ENGRAVE_COLOR: str = "#28220B"

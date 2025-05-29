@@ -154,7 +154,7 @@ class VariationManager {
         
         const svg = document.createElement('img');
         svg.className = 'variation-svg';
-        svg.src = `displayables/${this.templateName}_var${variationNumber}.svg`;
+        svg.src = `generated/displayables/${this.templateName}_var${variationNumber}.svg`;
         svg.alt = `${this.templateName} variation ${variationNumber + 1}`;
         svg.style.pointerEvents = 'none'; // Prevent img from interfering with container click
         
@@ -182,7 +182,7 @@ class VariationManager {
     async downloadVariation(variationNumber) {
         try {
             const filename = `${this.templateName}_var${variationNumber}.svg`;
-            const downloadPath = `downloadables/${filename}`;
+            const downloadPath = `generated/downloadables/${filename}`;
             
             // Fetch the SVG content
             const response = await fetch(downloadPath);

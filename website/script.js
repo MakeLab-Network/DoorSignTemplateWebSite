@@ -23,7 +23,7 @@ class TemplateManager {
     
     async loadConfig() {
         try {
-            const response = await fetch('config.json');
+            const response = await fetch('generated/config.json');
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -67,7 +67,7 @@ class TemplateManager {
                         console.warn(`Failed to preload ${templateName}_var${i}.svg`);
                         resolve(); // Don't fail the whole process for one image
                     };
-                    img.src = `displayables/${templateName}_var${i}.svg`;
+                    img.src = `generated/displayables/${templateName}_var${i}.svg`;
                 });
                 preloadPromises.push(promise);
             }
@@ -102,7 +102,7 @@ class TemplateManager {
         // Create single SVG element (no complex animation structure)
         const svg = document.createElement('img');
         svg.className = 'template-svg';
-        svg.src = `displayables/${templateName}_var0.svg`; // Start with first variation (0-based)
+        svg.src = `generated/displayables/${templateName}_var0.svg`; // Start with first variation (0-based)
         svg.alt = `${templateName} variation 0`;
         
         // Add click handler to navigate to template page
@@ -138,7 +138,7 @@ class TemplateManager {
             currentVariation = (currentVariation + 1) % variationCount;
             
             // Simply change the src - instant cut, no animation
-            const newSrc = `displayables/${templateName}_var${currentVariation}.svg`;
+            const newSrc = `generated/displayables/${templateName}_var${currentVariation}.svg`;
             svg.src = newSrc;
             
             // Update alt text for debugging
