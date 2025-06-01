@@ -1,12 +1,12 @@
 # Door Sign ~~Template~~ Shape Website
 
 ## General
-A website for downloading various shapes for a door sign, and the content of the sign is to be added in inkscape.
+A website for downloading various shapes for a door sign, and the content of the sign is to be added with inkscape.
 
 ## Web Site Generation
 
 This project uses GitHub Actions and Python scripts to automatically generate the website.
-Due to a limitation of LightBurn that does not recognized hidden layers are such, the generation script generate various variations of each svg file: One for the basic shape, and one for each engraving possibility.
+Due to a limitation of LightBurn that does not recognized hidden layers are such, the generation script generate various variations of each svg file: One for the basic shape, and one for each engraving possibility (includes the basic shape.)
 
 ## Guide to Adding Shapes / Engravings in Inkscape
 
