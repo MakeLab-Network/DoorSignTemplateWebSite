@@ -108,7 +108,7 @@ class VariationManager {
         const displayName = this.convertToTitleCase(this.templateName);
         const titleElement = document.getElementById('template-name');
         if (titleElement) {
-            titleElement.textContent = 'Choose Variation to Download';
+            titleElement.textContent = 'בחרו חריטה עבור המסגרת';
         }
         document.title = `${displayName} Variations`;
     }
@@ -166,7 +166,7 @@ class VariationManager {
         
         const downloadButton = document.createElement('button');
         downloadButton.className = 'download-button';
-        downloadButton.textContent = 'Download';
+        downloadButton.textContent = 'הורידו ⯆';
         downloadButton.addEventListener('click', () => {
             this.downloadVariation(variationNumber);
         });

@@ -5,6 +5,27 @@
     box-sizing: border-box;
 }
 
+/* RTL-specific styles */
+html[dir="rtl"] {
+    direction: rtl;
+}
+
+html[dir="rtl"] body {
+    text-align: right;
+}
+
+/* Ensure buttons and interactive elements work properly in RTL */
+html[dir="rtl"] .back-button {
+    /* Keep button text centered */
+    text-align: center;
+}
+
+/* Ensure loading spinner spins in the same direction regardless of RTL */
+html[dir="rtl"] .loading::after {
+    margin-right: 10px;
+    margin-left: 0;
+}
+
 html {
     background-color: var(--bg-color) !important;
     min-height: 100vh;
