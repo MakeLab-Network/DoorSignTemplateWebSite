@@ -16,9 +16,8 @@ Due to a limitation of LightBurn that does not recognized hidden layers are such
 - Copyrighted royaltee free purchased shapes are NOT appropriate, since the user can edit them, and the user is not the licensee.
 
 ### Instructions
-- For new shapes, Use `starting_point.svg` as your foundation when creating new shapes. put the basic shape in the "Cut" layer, black stroke, stroke width 0.4mm, no fill.
-- Leave at least 1cm margin from the page on each of the 4 sides.
-- Each possible engraving must be in its own separate layer red stroke, stroke width 0.4mm, no fill. If there is a possibility for two engravings together, they are also need to be together in their own layer, even if each one is already in its another layer.
+- For a new shapes, Use `starting_point.svg` as your foundation when creating new shapes. put the basic shape in the "Cut" layer: black stroke, stroke width 0.4mm, no fill. Leave about 1cm margin from each of the 4 sides.
+- Each possible engraving must be in its own separate layer: red stroke, stroke width 0.4mm, no fill. If there is a possibility for two engravings together, they are also need to be together in their own layer, even if each one is already in its another layer.
 - All engraving layer names must start with "Engrave" (e.g., "Engrave", "Engrave 2")
 - All layers need to be visible; all layers except "Contents" should be locked before saving.
 - Save it under the `source_templates` directory.
