@@ -60,7 +60,6 @@ class VariationManager {
             }
             
             this.applyColors();
-            this.updatePageTitle();
             this.createVariationGrid();
         } catch (error) {
             this.showError('Failed to load template variations. Please go back and try again.');
@@ -102,15 +101,6 @@ class VariationManager {
                 document.documentElement.style.setProperty('--img-bg-color', this.colors.webImg.backgroundColor);
             }
         }
-    }
-    
-    updatePageTitle() {
-        const displayName = this.convertToTitleCase(this.templateName);
-        const titleElement = document.getElementById('template-name');
-        if (titleElement) {
-            titleElement.textContent = 'בחרו חריטה עבור המסגרת';
-        }
-        document.title = `${displayName} Variations`;
     }
     
     convertToTitleCase(snakeCaseString) {
@@ -166,7 +156,7 @@ class VariationManager {
         
         const downloadButton = document.createElement('button');
         downloadButton.className = 'download-button';
-        downloadButton.textContent = 'הורידו ⯆';
+        downloadButton.textContent = 'הורידו ↓';
         downloadButton.addEventListener('click', () => {
             this.downloadVariation(variationNumber);
         });
@@ -213,7 +203,7 @@ class VariationManager {
         const button = document.querySelector(`[onclick*="downloadVariation(${variationNumber})"]`);
         if (button) {
             const originalText = button.textContent;
-            button.textContent = '✓ Downloaded!';
+            button.textContent = '✓ הורד בהצלחה';
             button.style.background = '#27ae60';
             
             setTimeout(() => {
