@@ -154,12 +154,31 @@ WARNING: AUTO-GENERATED FILE - END
     root.addprevious(new_comment)
 
 
-def get_engraving_layers(root: etree._Element, ns: Dict[str, str]) -> List[etree._Element]:
-    """Find and return all engraving layers in the SVG."""
-    return root.xpath(
+def get_engraving_layers(root: etree._Element, ns: Dict[str, str], source_file_svg: str) -> Tuple[List[str], List[Tuple[etree._Element, str]]]:
+    """Find and return all engraving layers in the SVG that have valid IDs.
+    
+    Returns:
+        Tuple of (all_layer_ids, valid_layers) where:
+        - all_layer_ids: List of all valid layer IDs
+        - valid_layers: List of (element, id) pairs for layers with valid IDs
+    """
+    engraving_layers_original = root.xpath(
         "//svg:g[starts-with(@inkscape:label, 'Engrave')]",
         namespaces=ns
     )
+    
+    all_layer_ids: List[str] = []
+    valid_layers: List[Tuple[etree._Element, str]] = []
+    
+    for layer_element in engraving_layers_original:
+        layer_id = layer_element.get('id')
+        if layer_id:
+            all_layer_ids.append(layer_id)
+            valid_layers.append((layer_element, layer_id))
+        else:
+            print(f"::warning file={source_file_svg}::Engraving layer found without an ID. Skipping this layer variation.")
+    
+    return all_layer_ids, valid_layers
 
 
 def remove_engraving_layers(root: etree._Element, ids_to_remove: List[str], ns: Dict[str, str]) -> None:
@@ -217,6 +236,26 @@ def create_layer_variation(original_tree: etree._ElementTree, layer_id_to_keep: 
     return write_svg_variation(layer_tree_copy, layer_variation_output_path, layer_variation_base_name)
 
 
+def remove_dash_layers(root: etree._Element, ns: Dict[str, str], source_file_svg: str) -> None:
+    """Remove all layers whose inkscape:label starts with '-' from the SVG."""
+    dash_layers = root.xpath(
+        "//svg:g[starts-with(@inkscape:label, '-')]",
+        namespaces=ns
+    )
+    
+    removed_count = 0
+    for layer_element in dash_layers:
+        layer_label = layer_element.get(f'{{{ns["inkscape"]}}}label', '')
+        parent = layer_element.getparent()
+        if parent is not None:
+            parent.remove(layer_element)
+            removed_count += 1
+            print(f"::info file={source_file_svg}::Removed layer '{layer_label}' (starts with '-')")
+    
+    if removed_count > 0:
+        print(f"::info file={source_file_svg}::Removed {removed_count} dash layer(s) from all variations")
+
+
 def create_variation_files(base_file_name: str) -> int:
     """Create all variations of an SVG file (base + individual engraving layers)."""
     NS: Dict[str, str] = {
@@ -239,19 +278,9 @@ def create_variation_files(base_file_name: str) -> int:
     
     add_warning_comment(original_root, source_file_svg)
     
-    engraving_layers_original: List[etree._Element] = get_engraving_layers(original_root, NS)
+    all_layer_ids, valid_layers = get_engraving_layers(original_root, NS, source_file_svg)
     
-    # Extract layer IDs once
-    all_layer_ids: List[str] = []
-    valid_layers: List[Tuple[etree._Element, str]] = []  # (element, id) pairs
-    
-    for layer_element in engraving_layers_original:
-        layer_id = layer_element.get('id')
-        if layer_id:
-            all_layer_ids.append(layer_id)
-            valid_layers.append((layer_element, layer_id))
-        else:
-            print(f"::warning file={source_file_svg}::Engraving layer found without an ID. Skipping this layer variation.")
+    remove_dash_layers(original_root, NS, source_file_svg)
     
     DOWNLOADABLE_TEMPLATE_DIR.mkdir(parents=True, exist_ok=True)
 
