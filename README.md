@@ -19,7 +19,7 @@ Due to a limitation of LightBurn that does not recognized hidden layers are such
 - For a new shapes, Use `starting_point.svg` as your foundation when creating new shapes. put the basic shape in the "Cut" layer: black stroke, stroke width 0.4mm, no fill. Leave about 1cm margin from each of the 4 sides.
 - Each possible engraving must be in its own separate layer: red stroke, stroke width 0.4mm, no fill. If there is a possibility for two engravings together, they are also need to be together in their own layer, even if each one is already in its another layer.
 - All engraving layer names must start with "Engrave" (e.g., "Engrave", "Engrave 2")
-- All layers need to be visible; all layers except "Contents" should be locked before saving.
+- All layers need to be visible; all layers except "Contents" should be locked before saving. Make all layers other than "Contents" highlight color (the one that appears in the layer pane) different from red.
 - If you have layers that you do not want to be in the generated files, have their name start with "-", those layers may be hidden. Such layers may contain base shapes that would be used for new engraving layers. See stars.svg as an example.
 - Save it under the `source_templates` directory.
 - For a new svg file:  Add it, without the `.svg` to `source_templates/order.json` which specify the order which the various shapes are displayed in the website.
