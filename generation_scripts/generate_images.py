@@ -1,6 +1,5 @@
 import os
 import re
-import copy
 import json
 import sys
 from pathlib import Path
@@ -154,41 +153,35 @@ WARNING: AUTO-GENERATED FILE - END
     root.addprevious(new_comment)
 
 
-def get_engraving_layers(root: etree._Element, ns: Dict[str, str], source_file_svg: str) -> Tuple[List[str], List[Tuple[etree._Element, str]]]:
-    """Find and return all engraving layers in the SVG that have valid IDs.
+def extract_and_remove_engraving_layers(root: etree._Element, ns: Dict[str, str], source_file_svg: str) -> List[Tuple[etree._Element, str]]:
+    """Extract all engraving layers from the SVG and remove them from the tree.
     
     Returns:
-        Tuple of (all_layer_ids, valid_layers) where:
-        - all_layer_ids: List of all valid layer IDs
-        - valid_layers: List of (element, id) pairs for layers with valid IDs
+        List of (element, id) pairs for layers with valid IDs that were extracted
     """
     engraving_layers_original = root.xpath(
         "//svg:g[starts-with(@inkscape:label, 'Engrave')]",
         namespaces=ns
     )
     
-    all_layer_ids: List[str] = []
-    valid_layers: List[Tuple[etree._Element, str]] = []
+    extracted_layers: List[Tuple[etree._Element, str]] = []
     
     for layer_element in engraving_layers_original:
         layer_id = layer_element.get('id')
         if layer_id:
-            all_layer_ids.append(layer_id)
-            valid_layers.append((layer_element, layer_id))
-        else:
-            print(f"::warning file={source_file_svg}::Engraving layer found without an ID. Skipping this layer variation.")
-    
-    return all_layer_ids, valid_layers
-
-
-def remove_engraving_layers(root: etree._Element, ids_to_remove: List[str], ns: Dict[str, str]) -> None:
-    """Remove engraving layers with IDs in the provided list."""
-    for layer_element in root.xpath("//svg:g[starts-with(@inkscape:label, 'Engrave')]", namespaces=ns):
-        layer_id = layer_element.get('id')
-        if layer_id and layer_id in ids_to_remove:
+            # Remove from tree
             parent = layer_element.getparent()
             if parent is not None:
                 parent.remove(layer_element)
+                extracted_layers.append((layer_element, layer_id))
+                print(f"::info file={source_file_svg}::Extracted engraving layer '{layer_id}' from base tree")
+        else:
+            print(f"::warning file={source_file_svg}::Engraving layer found without an ID. Skipping this layer variation.")
+    
+    return extracted_layers
+
+
+
 
 
 def write_svg_variation(tree: etree._ElementTree, output_path: Path, variation_base_name: str) -> bool:
@@ -203,37 +196,35 @@ def write_svg_variation(tree: etree._ElementTree, output_path: Path, variation_b
         return False
 
 
-def create_base_variation(original_tree: etree._ElementTree, base_file_name: str, variation_count: int, 
-                         all_layer_ids: List[str], ns: Dict[str, str]) -> bool:
-    """Create the base variation with no engraving layers."""
-    base_tree_copy: etree._ElementTree = copy.deepcopy(original_tree)
-    base_root_copy: etree._Element = base_tree_copy.getroot()
-    
-    remove_engraving_layers(base_root_copy, all_layer_ids, ns)
-    
+def create_base_variation(base_tree: etree._ElementTree, base_file_name: str, variation_count: int) -> bool:
+    """Create the base variation with no engraving layers (layers already removed)."""
     base_variation_name: str = f"{base_file_name}_var{variation_count}"
     no_engraving_output_filename_svg: str = f"{base_variation_name}.svg"
     no_engraving_output_path: Path = DOWNLOADABLE_TEMPLATE_DIR / no_engraving_output_filename_svg
     
-    return write_svg_variation(base_tree_copy, no_engraving_output_path, base_variation_name)
+    return write_svg_variation(base_tree, no_engraving_output_path, base_variation_name)
 
 
-def create_layer_variation(original_tree: etree._ElementTree, layer_id_to_keep: str, 
-                          base_file_name: str, variation_count: int, source_file_svg: str, 
-                          all_layer_ids: List[str], ns: Dict[str, str]) -> bool:
-    """Create a variation with only the specified engraving layer."""
-    layer_tree_copy: etree._ElementTree = copy.deepcopy(original_tree)
-    layer_root_copy: etree._Element = layer_tree_copy.getroot()
+def create_layer_variation(base_tree: etree._ElementTree, layer_element: etree._Element, layer_id: str,
+                          base_file_name: str, variation_count: int) -> bool:
+    """Create a variation with the specified engraving layer added to the base tree."""
+    base_root = base_tree.getroot()
     
-    # Remove all layers except the one to keep
-    ids_to_remove = [layer_id for layer_id in all_layer_ids if layer_id != layer_id_to_keep]
-    remove_engraving_layers(layer_root_copy, ids_to_remove, ns)
+    # Insert the engraving layer at the beginning (index 0) to make it the lowest/bottom layer
+    # This ensures engraving renders behind other elements, which is typically desired
+    base_root.insert(0, layer_element)
     
     layer_variation_base_name: str = f"{base_file_name}_var{variation_count}"
     layer_variation_filename_svg: str = f"{layer_variation_base_name}.svg"
     layer_variation_output_path: Path = DOWNLOADABLE_TEMPLATE_DIR / layer_variation_filename_svg
     
-    return write_svg_variation(layer_tree_copy, layer_variation_output_path, layer_variation_base_name)
+    # Write the variation
+    success = write_svg_variation(base_tree, layer_variation_output_path, layer_variation_base_name)
+    
+    # Remove the layer from the base tree for next iteration
+    base_root.remove(layer_element)
+    
+    return success
 
 
 def remove_dash_layers(root: etree._Element, ns: Dict[str, str], source_file_svg: str) -> None:
@@ -270,32 +261,33 @@ def create_variation_files(base_file_name: str) -> int:
         log_error(f"Source template file not found: {source_svg_path}", file_context="generation_scripts/generate_images.py")
         return 0
 
-    original_tree = parse_source_svg(source_svg_path)
-    if original_tree is None:
+    base_tree = parse_source_svg(source_svg_path)
+    if base_tree is None:
         return 0
     
-    original_root: etree._Element = original_tree.getroot()
+    base_root: etree._Element = base_tree.getroot()
     
-    add_warning_comment(original_root, source_file_svg)
+    add_warning_comment(base_root, source_file_svg)
     
-    all_layer_ids, valid_layers = get_engraving_layers(original_root, NS, source_file_svg)
+    # Extract all engraving layers from the tree (this removes them from base_tree)
+    extracted_layers = extract_and_remove_engraving_layers(base_root, NS, source_file_svg)
     
-    remove_dash_layers(original_root, NS, source_file_svg)
+    # Remove dash layers from the base tree
+    remove_dash_layers(base_root, NS, source_file_svg)
     
     DOWNLOADABLE_TEMPLATE_DIR.mkdir(parents=True, exist_ok=True)
 
     variation_count: int = 0
     successful_variations: int = 0
 
-    # Create base variation (no engraving layers)
-    
-    if create_base_variation(original_tree, base_file_name, variation_count, all_layer_ids, NS):
+    # Create base variation (no engraving layers - already removed)
+    if create_base_variation(base_tree, base_file_name, variation_count):
         successful_variations += 1
 
-    # Create variations for each engraving layer
-    for layer_element, layer_id in valid_layers:
+    # Create variations for each engraving layer (add/write/remove)
+    for layer_element, layer_id in extracted_layers:
         variation_count += 1
-        if create_layer_variation(original_tree, layer_id, base_file_name, variation_count, source_file_svg, all_layer_ids, NS):
+        if create_layer_variation(base_tree, layer_element, layer_id, base_file_name, variation_count):
             successful_variations += 1
             
     return successful_variations
