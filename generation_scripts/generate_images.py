@@ -210,9 +210,19 @@ def create_layer_variation(base_tree: etree._ElementTree, layer_element: etree._
     """Create a variation with the specified engraving layer added to the base tree."""
     base_root = base_tree.getroot()
     
-    # Insert the engraving layer at the beginning (index 0) to make it the lowest/bottom layer
-    # This will preserve the "Contents" layer as the top layer, which is typically desired.
-    base_root.insert(0, layer_element)
+    # Find the Contents layer and insert engraving layer right before it
+    # This ensures engraving appears on top of the filled Cut layer but below Contents
+    contents_layer = None
+    for i, child in enumerate(base_root):
+        if (child.tag.endswith('}g') or child.tag == 'g') and child.get('{http://www.inkscape.org/namespaces/inkscape}label') == 'Contents':
+            contents_layer = i
+            break
+    
+    if contents_layer is None:
+        # Fallback: insert at end (topmost layer) if Contents layer not found
+        base_root.append(layer_element)
+    else:
+        base_root.insert(contents_layer, layer_element)
     
     layer_variation_base_name: str = f"{base_file_name}_var{variation_count}"
     layer_variation_filename_svg: str = f"{layer_variation_base_name}.svg"
