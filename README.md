@@ -22,4 +22,4 @@ Due to a limitation of LightBurn that does not recognized hidden layers are such
 - All layers need to be visible; all layers except "Contents" should be locked before saving.
 - If you have layers that you do not want to be in the generated files, have their name start with "-", those layers may be hidden. Such layers may contain base shapes that would be used for new engraving layers. See stars.svg as an example.
 - Save it under the `source_templates` directory.
-- Add it, without the `.svg` to `source_templates/order.json` which specify the order which the various shapes are displayed in the website.
+- For a new svg file:  Add it, without the `.svg` to `source_templates/order.json` which specify the order which the various shapes are displayed in the website.
